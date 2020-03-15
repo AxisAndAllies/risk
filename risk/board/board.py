@@ -3,7 +3,7 @@
 #
 import random
 
-import territory
+from risk.board import territory
 
 import risk.logger
 from risk.errors.board import *

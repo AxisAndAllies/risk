@@ -115,7 +115,7 @@ class CurtisRiskBot(BasicRiskBot):
             for territory in game_master.board.continents[continent].values():
                 if self.reserves > 0:
                     if territory.owner == self:
-                        print self.reserves
+                        print(self.reserves)
                         game_master.player_add_army(self, territory.name, self.reserves)
         if number_of_turns > 10:
             for territory in game_master.board.continents[continent].values():
@@ -161,5 +161,5 @@ class IanRiskBot(BasicRiskBot):
         for territory in game_master.board.continents[continent].values():
             if self.reserves > 0:
                 if territory.owner == self:
-                    print self.reserves
+                    print(self.reserves)
                     game_master.player_add_army(self, territory.name, self.reserves)

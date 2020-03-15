@@ -1,7 +1,7 @@
 import random
 
 import risk
-import board.territory as Territory
+import risk.board.territory as Territory
 
 from risk.errors.battle import *
 

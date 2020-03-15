@@ -287,7 +287,7 @@ def attack_success_move_armies(player, game_master, origin, target):
                     number_to_move)
             done = True
         except GameMasterError as e:
-            print e
+            print(e)
             dialog.reset()
         except ValueError:
             # we really shouldn't get a parsing error from numeric dialog
@@ -373,7 +373,7 @@ def fortify_failed(player, origin, target, reason):
         NotConnected: 'The selected territories are not connected!',   
         TerritoryNotOwnedByPlayer: "You do not own %s!" % target.name,
     }
-    msg = expected[reason.__class__] if reason.__class__ in expected.keys() \
+    msg = expected[reason.__class__] if reason.__class__ in list(expected.keys()) \
             else "Unkonwn reason for failure..."
     dialog = PopupDialogAsset(DIALOG_X, DIALOG_Y, "Fortify Failed!", msg)
     picasso.add_asset(POPUP_DIALOG_LAYER, dialog)

@@ -1,7 +1,6 @@
 ###############################################################################
 ## Defines risk territories
 #
-from sets import Set
 
 import risk.logger
 
@@ -34,7 +33,7 @@ class Territory(object):
         # -1 represents infinite distance
         # n >= 0 means distance from this node
         NOT_FOUND = -1
-        visited = Set()
+        visited =  set()
         to_visit = [(self, [])]
         closest = None
         while len(to_visit) > 0 and not closest:
@@ -55,7 +54,7 @@ class Territory(object):
     def is_connected(self, target):
         # naive depth first search
         # warning, this operation is VERY expensive!
-        return Territory._graph_connection_search(self, target, Set([self]))
+        return Territory._graph_connection_search(self, target,  set([self]))
 
     def __str__(self):
         return  "[%s]\n" \
@@ -98,7 +97,7 @@ class ContinentBuilder(object):
             self.border(border[0], border[1])
      
     def create_territory_if_needed(self, territory):
-        if not self.graph.has_key(territory):
+        if territory not in self.graph:
             self.graph[territory] = Territory(territory)
 
     def validate(self):
@@ -121,9 +120,9 @@ class ContinentBuilder(object):
 
     @staticmethod
     def flood_graph(graph):
-        start = graph[graph.keys()[0]]
-        visited = Set([start])
-        targets = Set(start.neighbours.values())
+        start = graph[list(graph.keys())[0]]
+        visited =  set([start])
+        targets =  set(start.neighbours.values())
         while len(targets) > 0:
             current = targets.pop()
             if not current in visited:
@@ -133,7 +132,7 @@ class ContinentBuilder(object):
                     targets -= visited
             if len(current.neighbours) <= 1:
                 risk.logger.warn("%s looks suspicious..." % current.name)
-        return Set(graph.values()) - visited
+        return  set(graph.values()) - visited
             
     
             

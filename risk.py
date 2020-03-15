@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # std
 import argparse
 import sys
@@ -7,7 +7,7 @@ import os
 import risk
 import risk.logger
 import risk.game_master
-from risk import board
+from risk.board import board
 from risk.game_master import GameMaster
 
 # fixes the pathing so that the game doesn't need to be run from root
@@ -37,7 +37,7 @@ def app_setup():
 ## CLI functionsr
 #
 def print_banner():
-    print \
+    print(\
 """
     --==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==--
     ||                              PyRisk                             ||
@@ -53,7 +53,7 @@ def print_banner():
     ||-----------------------------------------------------------------||
     ||                     By: CMPT106 Group Beta                      ||
     --==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==-==--
-"""
+""")
 
 
 ###############################################################################
@@ -104,6 +104,7 @@ if __name__ == '__main__':
     settings = app_setup()
     risk.logger.debug(settings)
     master = game_setup(settings)
+    print('hello')
     if not settings.cli:
         import risk.graphics
         risk.graphics.init(master)

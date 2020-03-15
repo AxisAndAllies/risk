@@ -191,7 +191,7 @@ class BlockingSliderDialogAsset(DialogAsset):
                 self.drag_dialog()
             elif self.finished_button.mouse_hovering(event.pos):
                 done = self.finished_button.confirmed_click()
-                #print done
+                #print(done
         return self.current
 
     def reset(self):

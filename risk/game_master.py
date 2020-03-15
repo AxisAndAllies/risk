@@ -1,4 +1,3 @@
-from sets import Set
 
 import risk
 import risk.logger
@@ -106,7 +105,7 @@ class GameMaster(object):
         risk.logger.debug("Generating %s human players" % \
             number_of_human_players)
 
-        for i in xrange(number_of_human_players):
+        for i in range(0,number_of_human_players):
             if cli:
                 self.players.append(HumonRiskPlayer("Human %s" % i))
             else:
@@ -177,11 +176,11 @@ class GameMaster(object):
     def eliminate_player(self, player):
         self.players.remove(player)
         for _ in xrange(10):
-            print "%s eliminated!" % player.name
+            print("%s eliminated!" % player.name)
 
         if len(self.players) <= 1:
             for _ in xrange(100):
-                print "%s WINS!!!!" % self.current_player().name
+                print("%s WINS!!!!" % self.current_player().name)
             self.end_game()
 
     def set_phase(self, new_phase):
