@@ -4,28 +4,27 @@
 #
 
 import time
+import traceback
 
 import pygame
 
 import risk
-import risk.logger
 import risk.graphics.assets.player
-
-from risk.graphics import graphics
-from risk.errors.input import UserQuitInput
-from risk.errors.game_master import GameMasterError
+import risk.logger
 from risk.errors.battle import RiskBattleError
-
-from risk.graphics.event import wait_for_event, get_events
-from risk.graphics.event import wait_for_mouse_click
-from risk.graphics.datastore import Datastore
-from risk.graphics.picasso import get_picasso
-from risk.graphics.assets.player import *
-from risk.graphics.assets.text import TextAsset, CentredTextAsset
-from risk.graphics.assets.territory import TerritoryAsset
+from risk.errors.game_master import (GameMasterError, NotConnected,
+                                     TerritoryNotOwnedByPlayer)
+from risk.errors.input import UserQuitInput
+from risk.graphics import graphics
 from risk.graphics.assets.dialog import BlockingSliderDialogAsset
 from risk.graphics.assets.message import PopupDialogAsset
-from risk.errors.game_master import NotConnected, TerritoryNotOwnedByPlayer
+from risk.graphics.assets.player import *
+from risk.graphics.assets.territory import TerritoryAsset
+from risk.graphics.assets.text import CentredTextAsset, TextAsset
+from risk.graphics.datastore import Datastore
+from risk.graphics.event import (get_events, wait_for_event,
+                                 wait_for_mouse_click)
+from risk.graphics.picasso import get_picasso
 
 LAYER = '5_player_feedback'
 DIALOG_LAYER = '6_player_dialog'
@@ -52,14 +51,14 @@ ATTACK_HINTS = {
                  == ATTACK ==
 
 Click on your own territory to begin
-attacking! 
+attacking!
 Click on the 'next' button to begin fortifying.
 """,
     'attacking':
     """
              == Choose Target ==
 
-Select an adjacent enemy territory to attack. 
+Select an adjacent enemy territory to attack.
 Click anywhere else to cancel.
 """,
     'failed':
@@ -72,7 +71,7 @@ You've failed the attack! Army reduced to 1...
     """
            == Attack Succeeded ==
 
-Great success! You've captured the enemy 
+Great success! You've captured the enemy
 territory!
 """
 }
@@ -118,15 +117,16 @@ def get_clicked_buttons(mouse_pos):
 
 
 def handle_user_mouse_input(game_master, state_entry):
+
     player = game_master.current_player()
     state_entry(player, game_master)
-    #wait_for_mouse_click(player, game_master, state_entry)
+    # wait_for_mouse_click(player, game_master, state_entry)
 
 
 def get_all_clickables():
     datastore = Datastore()
-    return datastore.get_storage('buttons').values() + \
-        datastore.get_storage('territories').values()
+    return list(datastore.get_storage('buttons').values()) + \
+        list(datastore.get_storage('territories').values())
 
 
 def disable_all_clickables():
@@ -188,8 +188,8 @@ def reinforce_phase(player, game_master):
     # state init vector
     datastore = Datastore()
     picasso = get_picasso()
-    #reserve_count_asset = ReserveCountAsset(player)
-    #picasso.add_asset(LAYER, reserve_count_asset)
+    # reserve_count_asset = ReserveCountAsset(player)
+    # picasso.add_asset(LAYER, reserve_count_asset)
     # core state machine
     disable_enemy_territories(player)
     while player.reserves > 0:
@@ -197,19 +197,27 @@ def reinforce_phase(player, game_master):
                                       player.reserves)
         picasso.add_asset(LAYER, hint_asset)
         event = wait_for_mouse_click()
+
         for name, clickable in graphics.pressed_clickables(event.pos,
                                                            'territories'):
-            if isinstance(clickable, TerritoryAsset):
-                territory = clickable.territory
-                # makegonow for now, fix later
-                try:
-                    reinforce_add_army(player, game_master, territory)
-                except GameMasterError:
-                    reinforce_add_army_fail(player, game_master, territory)
+            try:
+
+                if isinstance(clickable, TerritoryAsset):
+                    territory = clickable.territory
+                    # makegonow for now, fix later
+                    try:
+                        reinforce_add_army(player, game_master, territory)
+                    except GameMasterError:
+                        reinforce_add_army_fail(
+                            player, game_master, territory)
+
+            except Exception as e:
+                print('Reinforcing failed!!!', e)
+                traceback.print_tb(e.__traceback__)
         picasso.remove_asset(LAYER, hint_asset)
-    # exit state
+# exit state
     enable_all_clickables()
-    #picasso.remove_asset(LAYER, reserve_count_asset)
+    # picasso.remove_asset(LAYER, reserve_count_asset)
 
 
 def reinforce_add_army(player, game_master, territory, number_of_armies=1):

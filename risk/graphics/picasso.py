@@ -30,7 +30,7 @@ def get_picasso(*args, **kwargs):
 
 class Picasso(threading.Thread):
     def __init__(self, background='', width=1920,
-                 height=1080, fps=30, caption='RiskPy'):
+                 height=1080, fps=60, caption='RiskPy'):
         pygame.init()
         flags = 0x0
         flags |= pygame.RESIZABLE

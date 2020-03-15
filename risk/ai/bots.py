@@ -57,7 +57,7 @@ class BasicRiskBot(AbstractRiskPlayer):
                 risk.logger.debug("%s going to attack from %s" %
                                   (self.name, name))
                 targets = territory.neighbours.values()
-                targets = filter(lambda x: x.owner != self, targets)
+                targets = list(filter(lambda x: x.owner != self, targets))
                 targets = [t.name for t in targets]
                 if len(targets) > 0:
                     choice = random.randint(0, len(targets) - 1)

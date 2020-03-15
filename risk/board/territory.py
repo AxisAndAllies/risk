@@ -73,9 +73,9 @@ class Territory(object):
             return True
         else:
             found = False
-            neighbours = filter(lambda x: x.owner == current.owner and
-                                not x in visited,
-                                current.neighbours.values())
+            neighbours = list(filter(lambda x: x.owner == current.owner and
+                                     not x in visited,
+                                     current.neighbours.values()))
             while len(neighbours) > 0 and not found:
                 next_node = neighbours.pop()
                 visited.add(next_node)
