@@ -80,7 +80,7 @@ class GameMaster(object):
 
     def deploy_troops(self):
         risk.logger.debug('Starting troop deploy phase...')
-        for _ in xrange(starting_reserves / self._DEPLOYS_PER_TURN):
+        for _ in range(starting_reserves / self._DEPLOYS_PER_TURN):
             for player in self.players:
                 if player.reserves > 0:
                     player.deploy_reserve(self, self._DEPLOYS_PER_TURN)
@@ -116,7 +116,7 @@ class GameMaster(object):
         risk.logger.debug("Generating %s bots" % \
             (self._num_players - number_of_human_players))
 
-        for i in xrange(self._num_players - number_of_human_players):
+        for i in range(self._num_players - number_of_human_players):
             self.players.append(BasicRiskBot(str(i)))
 
     def _print_available_territories(self):
@@ -175,11 +175,11 @@ class GameMaster(object):
 
     def eliminate_player(self, player):
         self.players.remove(player)
-        for _ in xrange(10):
+        for _ in range(10):
             print("%s eliminated!" % player.name)
 
         if len(self.players) <= 1:
-            for _ in xrange(100):
+            for _ in range(100):
                 print("%s WINS!!!!" % self.current_player().name)
             self.end_game()
 
@@ -234,14 +234,14 @@ class GameMaster(object):
     def player_territories(self, player):
         # O(n) lookup
         player_territories = {}
-        for name, territory in self.board.territories().iteritems():
+        for name, territory in self.board.territories().items():
             if territory.owner == player:
                 player_territories[name] = territory
         return player_territories
 
     def player_total_armies(self, player):
         count = 0
-        for name, territory in self.player_territories(player).iteritems():
+        for name, territory in self.player_territories(player).items():
             count += territory.armies
         return count
 
