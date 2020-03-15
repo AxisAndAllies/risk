@@ -1,5 +1,6 @@
 import time
 import threading
+import traceback
 
 import sys
 
@@ -61,6 +62,7 @@ class Picasso(threading.Thread):
         except Exception as e:
             risk.logger.critical(
                 "shit happened in the picasso subsystem! %s" % e)
+            traceback.print_tb(e.__traceback__)
 
         pygame.quit()
 
@@ -71,19 +73,16 @@ class Picasso(threading.Thread):
         # make a deep copy of layers first to avoid race condition where dict
         # size can change during iteration. try to do it lockless, if we're
         # still having issues, fix with mutex
-
+        items = self.canvas.copy().items()
         # try:
-        for _, level in sorted(self.canvas.items()):
+        for _, level in sorted(items):
             for asset in level:
-                try:
-                    if isinstance(asset, PicassoAsset):
-                        self.window.blit(
-                            asset.draw(), asset.get_coordinate())
-                    else:
-                        risk.logger.warn("None asset detected in canvas, ",
-                                         "skipping...[%s]" % asset)
-                except Exception as e:
-                    print(str(e))
+                if isinstance(asset, PicassoAsset):
+                    self.window.blit(
+                        asset.draw(), asset.get_coordinate())
+                else:
+                    risk.logger.warn("None asset detected in canvas, ",
+                                     "skipping...[%s]" % asset)
         # except RuntimeError as e:
         #     risk.logger.error("ignoring dictionary size change...")
         fps_asset = self.get_fps_asset()
